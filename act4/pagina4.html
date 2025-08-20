@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background: black;
+        }
+        #miCanvas {
+            background: black;
+            border: 4px solid #fff;
+            display: block;
+            margin: 40px auto;
+            box-shadow: 0 0 20px #fff;
+        }
+    </style>
+</head>
+<body>
+    <img src="sans.png" alt="Imagen decorativa" style="display:block;margin:20px auto;width:200px;height:auto;">
+    <canvas id="miCanvas" width="800" height="400"></canvas>
+    <img src="acciones.png" alt="Imagen decorativa abajo" style="display:block;margin:20px auto;width:600px;height:auto;">
+                <canvas id="corazonCanvas" width="400" height="400" style="display:block;margin:40px auto;background:black;border:2px solid white;"></canvas>
+                <script>
+                // Dibujar corazón con cuadros pequeños en el nuevo canvas
+                const corazonCanvas = document.getElementById('corazonCanvas');
+                const corazonCtx = corazonCanvas.getContext('2d');
+                const pixel = 20;
+                // Mapa de corazón en pixeles (1=rojo, 0=transparente)
+                const corazonMapa = [
+                    [0,0,1,1,0,0,1,1,0,0],
+                    [0,1,1,1,1,1,1,1,1,0],
+                    [1,1,1,1,1,1,1,1,1,1],
+                    [1,1,1,1,1,1,1,1,1,1],
+                    [0,1,1,1,1,1,1,1,1,0],
+                    [0,0,1,1,1,1,1,1,0,0],
+                    [0,0,0,1,1,1,1,0,0,0],
+                    [0,0,0,0,1,1,0,0,0,0]
+                ];
+                for(let y=0; y<corazonMapa.length; y++){
+                    for(let x=0; x<corazonMapa[y].length; x++){
+                        if(corazonMapa[y][x]){
+                            corazonCtx.fillStyle = 'red';
+                            corazonCtx.fillRect(x*pixel+60, y*pixel+60, pixel, pixel);
+                            corazonCtx.strokeStyle = 'black';
+                            corazonCtx.strokeRect(x*pixel+60, y*pixel+60, pixel, pixel);
+                        }
+                    }
+                }
+                </script>
+        <script>
+        const canvas = document.getElementById('miCanvas');
+        const ctx = canvas.getContext('2d');
+        const cuadros = [
+            {x: 0, y: 100, color: 'red', speed: 2, direccion: 1},
+            {x: 0, y: 200, color: 'blue', speed: 3, direccion: 1},
+            {x: 0, y: 300, color: 'red', speed: 1.5, direccion: 1},
+            {x: 0, y: 150, color: 'blue', speed: 2.5, direccion: 1}
+        ];
+        const size = 80;
+
+        const imagenCanvas = new Image();
+        imagenCanvas.src = 'corazon.png';
+
+        // Propiedades de la imagen animada
+        const imgSize = 100;
+        let imgX = 350;
+        let imgY = 50;
+        let imgSpeedX = 2.5;
+        let imgSpeedY = 2;
+        let imgDirX = 1;
+        let imgDirY = 1;
+
+        function dibujar() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Mover y dibujar la imagen animada
+            if (imagenCanvas.complete && imagenCanvas.naturalWidth > 0) {
+                ctx.drawImage(imagenCanvas, imgX, imgY, imgSize, imgSize);
+                imgX += imgSpeedX * imgDirX;
+                imgY += imgSpeedY * imgDirY;
+                // Rebote horizontal
+                if (imgX + imgSize > canvas.width) {
+                    imgDirX = -1;
+                    imgX = canvas.width - imgSize;
+                }
+                if (imgX < 0) {
+                    imgDirX = 1;
+                    imgX = 0;
+                }
+                // Rebote vertical
+                if (imgY + imgSize > canvas.height) {
+                    imgDirY = -1;
+                    imgY = canvas.height - imgSize;
+                }
+                if (imgY < 0) {
+                    imgDirY = 1;
+                    imgY = 0;
+                }
+            }
+            cuadros.forEach(cuadro => {
+                ctx.fillStyle = cuadro.color;
+                ctx.fillRect(cuadro.x, cuadro.y, size, size);
+                cuadro.x += cuadro.speed * cuadro.direccion;
+                // Rebote en los límites izquierdo y derecho
+                if (cuadro.x + size > canvas.width) {
+                    cuadro.direccion = -1;
+                    cuadro.x = canvas.width - size;
+                }
+                if (cuadro.x < 0) {
+                    cuadro.direccion = 1;
+                    cuadro.x = 0;
+                }
+            });
+            requestAnimationFrame(dibujar);
+        }
+        imagenCanvas.onload = dibujar;
+        </script>
+</body>
+</html>
