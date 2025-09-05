@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Movimiento con Flechas</title>
+    <style>
+      body {
+        background-color: cadetblue;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <aside>Usa las flechas ↑ ↓ ← → para mover el cuadro.</aside>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    
+    <script>
+    // Definición de Keycodes para las flechas
+    const Keycode = {
+      UP: 38,
+      DOWN: 40,
+      LEFT: 37,
+      RIGHT: 39
+    };
+
+    let canvas, context;
+    let x = 100, y = 100;   // posición inicial del cuadro
+    const size = 50;        // tamaño del cuadro
+    const speed = 10;       // velocidad de movimiento
+
+    window.onload = function () {
+      canvas = document.getElementById("canvas");
+      context = canvas.getContext("2d");
+
+      draw();
+    };
+
+    function draw() {
+      // fondo blanco en el canvas
+      context.fillStyle = "white";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
+      // dibujar cuadro morado
+      context.fillStyle = "purple";
+      context.fillRect(x, y, size, size);
+    }
+
+    function onKeyboardEvent(event) {
+      switch (event.keyCode) {
+        case Keycode.UP: // Arriba
+          if (y - speed >= 0) y -= speed;
+          break;
+        case Keycode.DOWN: // Abajo
+          if (y + size + speed <= canvas.height) y += speed;
+          break;
+        case Keycode.LEFT: // Izquierda
+          if (x - speed >= 0) x -= speed;
+          break;
+        case Keycode.RIGHT: // Derecha
+          if (x + size + speed <= canvas.width) x += speed;
+          break;
+      }
+      draw();
+    }
+
+    window.addEventListener('keydown', onKeyboardEvent, false);
+    </script>
+  </body>
+</html>

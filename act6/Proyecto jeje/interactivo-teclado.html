@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>WASD + Space</title>
+    <style>
+      body {
+        background-color: cadetblue;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <aside>Presiona W, A, S, D o SPACE para mostrar letra, texto e imagen.</aside>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    
+    <script>
+    // Keycodes para WASD + Space
+    const Keycode = {
+      W: 87,
+      A: 65,
+      S: 83,
+      D: 68,
+      SPACE: 32
+    };
+
+    let canvas, context;
+    let currentKey = null;
+    let images = {};
+
+    // Cargamos imágenes (usa cualquier URL de imagen o tus propias imágenes locales)
+    function loadImages() {
+      images["W"] = new Image();
+      images["W"].src = "https://via.placeholder.com/150/ff0000/ffffff?text=W";
+
+      images["A"] = new Image();
+      images["A"].src = "https://via.placeholder.com/150/00ff00/ffffff?text=A";
+
+      images["S"] = new Image();
+      images["S"].src = "https://via.placeholder.com/150/0000ff/ffffff?text=S";
+
+      images["D"] = new Image();
+      images["D"].src = "https://via.placeholder.com/150/f0f000/000000?text=D";
+
+      images["SPACE"] = new Image();
+      images["SPACE"].src = "https://via.placeholder.com/150/000000/ffffff?text=SPACE";
+    }
+
+    window.onload = function () {
+      canvas = document.getElementById("canvas");
+      context = canvas.getContext("2d");
+      loadImages();
+      draw();
+    };
+
+    function draw() {
+      // Fondo blanco
+      context.fillStyle = "white";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (currentKey) {
+        // Mostrar letra grande
+        context.fillStyle = "purple";
+        context.font = "100px Arial";
+        context.fillText(currentKey, 350, 200);
+
+        // Mostrar texto asociado
+        context.fillStyle = "black";
+        context.font = "40px Arial";
+
+        let message = "";
+        switch (currentKey) {
+          case "W": message = "Arriba"; break;
+          case "A": message = "Izquierda"; break;
+          case "S": message = "Abajo"; break;
+          case "D": message = "Derecha"; break;
+          case "SPACE": message = "Saltar"; break;
+        }
+        context.fillText(message, 350, 300);
+
+        // Mostrar imagen
+        let img = images[currentKey];
+        if (img.complete) {
+          context.drawImage(img, 325, 350, 150, 150);
+        }
+      }
+    }
+
+    function onKeyboardEvent(event) {
+      switch (event.keyCode) {
+        case Keycode.W: currentKey = "W"; break;
+        case Keycode.A: currentKey = "
