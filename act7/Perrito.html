@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Perrito interactivo</title>
+<style>
+  canvas {
+    background: #e0f7fa;
+    display: block;
+    margin: 0 auto;
+  }
+  .info {
+    width: 500px;
+    margin: 10px auto;
+    font-family: sans-serif;
+    text-align: center;
+  }
+  .info div {
+    background: #fff3cd;
+    border: 1px solid #ffecb5;
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+  }
+</style>
+</head>
+<body>
+<div class="info">
+  <div>Haz click en las orejas para bajarlas/subirlas</div>
+  <div>Haz click en la boca para sacar/meter la lengua</div>
+  <div>Presiona barra espaciadora para cambiar de raza (color)</div>
+</div>
+<canvas id="canvas" width="500" height="500"></canvas>
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const mouse = {x: canvas.width/2, y: canvas.height/2};
+
+const dog = {
+  x: 250,
+  y: 250,
+  bodyColor: "#c49a6c" // café inicial
+};
+
+let earsDown = false;
+let tongueOut = true;
+
+const leftEye = {x: -35, y: -10};
+const rightEye = {x: 35, y: -10};
+const eyeRadius = 18;
+const pupilRadius = 6;
+
+canvas.addEventListener("mousemove", (e)=>{
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = e.clientX - rect.left;
+  mouse.y = e.clientY - rect.top;
+});
+
+canvas.addEventListener("click",(e)=>{
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  // zonas orejas
+  const earBaseY = dog.y - 130;
+  const earLeftX = dog.x - 90;
+  const earRightX = dog.x + 60;
+  const earHeight = 30;
+  const earWidth = 30;
+
+  // boca:
+  const mouthX = dog.x - 15;
+  const mouthY = dog.y - 20;
+
+  // click en orejas
+  if ((mx>earLeftX && mx<earLeftX+earWidth && my>earBaseY && my<earBaseY+earHeight) ||
+      (mx>earRightX && mx<earRightX+earWidth && my>earBaseY && my<earBaseY+earHeight)){
+    earsDown = !earsDown;
+  }
+
+  // click en boca
+  if (mx>mouthX && mx<mouthX+30 && my>mouthY && my<mouthY+20){
+    tongueOut = !tongueOut;
+  }
+});
+
+document.addEventListener("keydown",(e)=>{
+  if(e.code==="Space"){
+    e.preventDefault(); // evitar que se mueva la pantalla
+    // cambiar color entre café y amarillo
+    dog.bodyColor = (dog.bodyColor==="#c49a6c")?"#f5d142":"#c49a6c";
+  }
+});
+
+function drawDog() {
+  // cuerpo
+  ctx.fillStyle = dog.bodyColor;
+  ctx.fillRect(dog.x - 100, dog.y - 50, 200, 100); // cuerpo
+  ctx.fillRect(dog.x - 90, dog.y - 100, 180, 50); // cabeza
+
+  // orejas (si están abajo cambian Y un poco hacia abajo)
+  ctx.fillStyle = "#8b5a2b";
+  const earY = earsDown?dog.y - 110:dog.y - 130; // bajan un poco
+  ctx.fillRect(dog.x - 90, earY, 30, 30);
+  ctx.fillRect(dog.x + 60, earY, 30, 30);
+
+  // nariz/boca
+  ctx.fillStyle = "#000000";
+  ctx.fillRect(dog.x - 15, dog.y - 20, 30, 20);
+
+  // lengua
+  if(tongueOut){
+    ctx.fillStyle = "#ff4d4d";
+    ctx.fillRect(dog.x - 10, dog.y, 20, 25);
+  }
+}
+
+function drawEyes() {
+  const dx = mouse.x - dog.x;
+  const dy = mouse.y - dog.y;
+  const angle = Math.atan2(dy, dx);
+
+  ctx.fillStyle = "#ffffff";
+  ctx.beginPath();
+  ctx.arc(dog.x + leftEye.x, dog.y + leftEye.y, eyeRadius, 0, Math.PI*2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(dog.x + rightEye.x, dog.y + rightEye.y, eyeRadius, 0, Math.PI*2);
+  ctx.fill();
+
+  const offsetX = Math.cos(angle) * 6;
+  const offsetY = Math.sin(angle) * 6;
+
+  ctx.fillStyle = "#000000";
+  ctx.beginPath();
+  ctx.arc(dog.x + leftEye.x + offsetX, dog.y + leftEye.y + offsetY, pupilRadius, 0, Math.PI*2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(dog.x + rightEye.x + offsetX, dog.y + rightEye.y + offsetY, pupilRadius, 0, Math.PI*2);
+  ctx.fill();
+}
+
+function animate() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawDog();
+  drawEyes();
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+</body>
+</html>
+
+
