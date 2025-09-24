@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Corazón con ondas</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #111;
+      height: 100vh;
+    }
+    canvas {
+      background: #222;
+    }
+  </style>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500"></canvas>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const pixelSize = 20;
+
+// corazon de cuadritos
+const heartPattern = [
+  "001100001100",
+  "011110011110",
+  "111111111111",
+  "111111111111",
+  "011111111110",
+  "001111111100",
+  "000111111000",
+  "000011110000",
+  "000001100000"
+];
+
+let particles = [];
+let time = 0;
+
+// pintamos el corazon, cada cuadrito late a su rollo
+function drawHeart() {
+  ctx.fillStyle = "red";
+  heartPattern.forEach((row, y) => {
+    row.split("").forEach((col, x) => {
+      if (col === "1") {
+        let randOffset = (x + y) * 0.5; // pa que no laten todos igual
+        let scale = 1 + Math.cos(time + randOffset) * 0.1; // coseno pa’ inflarse
+        ctx.fillRect(
+          150 + x * pixelSize,
+          100 + y * pixelSize,
+          pixelSize * scale,
+          pixelSize * scale
+        );
+        // chance bajita pa que no salgan tantas gotitas
+        if (Math.random() < 0.002) {
+          particles.push({
+            x: 160 + x * pixelSize,
+            y: 110 + y * pixelSize,
+            time: 0
+          });
+        }
+      }
+    });
+  });
+}
+
+// gotitas cayendo
+function drawParticles() {
+  particles.forEach((p, i) => {
+    p.time += 0.05;
+    p.y += 0.7; // caen despacito
+    let offsetX = Math.sin(p.time * 2) * 4;
+    let scale = Math.abs(Math.cos(p.time)) * 1.3;
+
+    ctx.fillStyle = "red";
+    ctx.fillRect(p.x + offsetX, p.y, pixelSize * 0.4 * scale, pixelSize * 0.4 * scale);
+
+    if (p.y > canvas.height) {
+      particles.splice(i, 1);
+    }
+  });
+}
+
+// animacion
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawHeart();
+  drawParticles();
+  time += 0.05;
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+</body>
+</html>
