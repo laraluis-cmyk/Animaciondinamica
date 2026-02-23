@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Jerarquía Cinematográfica</title>
+
+<style>
+body{
+    background:#0f0f14;
+    font-family:Segoe UI, sans-serif;
+    color:#fff;
+    padding:40px;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:60px;
+}
+
+.tree{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:50px;
+}
+
+/* ===== NIVELES ===== */
+.level{
+    display:flex;
+    gap:40px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+/* ===== NODOS ===== */
+.node{
+    position:relative;
+    width:130px;
+    height:130px;
+    background:#1f1f2e;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:12px;
+    cursor:pointer;
+    transition:.3s ease;
+    animation:fadeUp .6s ease forwards;
+}
+
+.node:hover{
+    background:#4f46e5;
+    box-shadow:0 0 25px rgba(99,102,241,.6);
+}
+
+.node.active{
+    transform:scale(1.4);
+    z-index:10;
+}
+
+/* ===== TRIÁNGULOS ===== */
+.triangle{
+    width:0;
+    height:0;
+    border-left:70px solid transparent;
+    border-right:70px solid transparent;
+    border-top:120px solid #2a2a40;
+    cursor:pointer;
+    position:relative;
+    transition:.3s ease;
+}
+
+.triangle span{
+    position:absolute;
+    top:-95px;
+    left:-55px;
+    width:110px;
+    text-align:center;
+    font-size:13px;
+}
+
+.triangle:hover{
+    border-top-color:#6366f1;
+}
+
+/* ===== TOOLTIP ===== */
+.tooltip{
+    position:absolute;
+    bottom:-90px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#000;
+    padding:8px;
+    border-radius:8px;
+    font-size:12px;
+    width:200px;
+    opacity:0;
+    pointer-events:none;
+    transition:.3s ease;
+}
+
+.node:hover .tooltip,
+.triangle:hover .tooltip{
+    opacity:1;
+}
+
+/* ===== SUBNIVELES ===== */
+.sublevel{
+    display:none;
+    margin-top:25px;
+    gap:30px;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.sublevel.show{
+    display:flex;
+}
+
+/* ===== LÍNEAS ===== */
+.line{
+    width:2px;
+    height:40px;
+    background:linear-gradient(#6366f1, transparent);
+}
+
+/* ===== ANIMACIÓN ===== */
+@keyframes fadeUp{
+    from{opacity:0; transform:translateY(25px);}
+    to{opacity:1; transform:translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<h1>Jerarquía de Producción Cinematográfica</h1>
+
+<div class="tree">
+
+<!-- PRODUCTOR -->
+<div class="level">
+    <div class="node" onclick="zoom(this)">
+        Productor
+        <div class="tooltip">Responsable legal, financiero y administrativo de la película.</div>
+    </div>
+</div>
+
+<div class="line"></div>
+
+<!-- DIRECTOR -->
+<div class="level">
+    <div class="node" onclick="zoom(this)">
+        Director
+        <div class="tooltip">Define la visión creativa y narrativa del film.</div>
+    </div>
+</div>
+
+<div class="line"></div>
+
+<!-- PRODUCCIÓN -->
+<div class="level">
+    <div class="triangle" onclick="toggle(this)">
+        <span>Producción</span>
+        <div class="tooltip">Área administrativa y logística del proyecto.</div>
+    </div>
+</div>
+
+<div class="sublevel">
+    <div class="node">Productor Ejecutivo<div class="tooltip">Supervisa el proyecto y equilibra presupuesto y visión.</div></div>
+    <div class="node">Coproductor<div class="tooltip">Comparte responsabilidades y derechos de producción.</div></div>
+    <div class="node">Productor Asociado<div class="tooltip">Apoya financieramente o en desarrollo.</div></div>
+    <div class="node">Productor en Línea<div class="tooltip">Gestiona el rodaje en una locación específica.</div></div>
+    <div class="node">Gerente de Producción<div class="tooltip">Coordina personal, recursos y logística diaria.</div></div>
+    <div class="node">Contador<div class="tooltip">Controla presupuesto, pagos y nómina.</div></div>
+    <div class="node">Coordinador de Producción<div class="tooltip">Contratos, permisos, reportes y logística.</div></div>
+    <div class="node">Asistente de Producción<div class="tooltip">Apoya al set y mantiene el orden operativo.</div></div>
+</div>
+
+<div class="line"></div>
+
+<!-- FOTOGRAFÍA -->
+<div class="level">
+    <div class="triangle" onclick="toggle(this)">
+        <span>Fotografía</span>
+        <div class="tooltip">Imagen, cámara y encuadre.</div>
+    </div>
+</div>
+
+<div class="sublevel">
+    <div class="node">Director de Fotografía<div class="tooltip">Diseña la imagen junto al director.</div></div>
+    <div class="node">Operador de Cámara<div class="tooltip">Ejecuta encuadres y movimientos.</div></div>
+    <div class="node">1er AC<div class="tooltip">Responsable del enfoque.</div></div>
+    <div class="node">2do AC<div class="tooltip">Claqueta y reportes de cámara.</div></div>
+    <div class="node">Data Manager<div class="tooltip">Respaldo y control del material grabado.</div></div>
+    <div class="node">Steadicam<div class="tooltip">Estabiliza la cámara en movimiento.</div></div>
+    <div class="node">Video Assist<div class="tooltip">Monitoreo de tomas para dirección.</div></div>
+</div>
+
+<div class="line"></div>
+
+<!-- ILUMINACIÓN -->
+<div class="level">
+    <div class="triangle" onclick="toggle(this)">
+        <span>Iluminación</span>
+        <div class="tooltip">Diseño y ejecución de la luz.</div>
+    </div>
+</div>
+
+<div class="sublevel">
+    <div class="node">Gaffer<div class="tooltip">Diseña y ejecuta la iluminación.</div></div>
+    <div class="node">Jefe Eléctrico<div class="tooltip">Mano derecha del gaffer.</div></div>
+    <div class="node">Eléctricos<div class="tooltip">Colocan luces y energía.</div></div>
+    <div class="node">Tramoyista<div class="tooltip">Montaje técnico del set.</div></div>
+    <div class="node">Dollista<div class="tooltip">Movimientos de cámara con dolly.</div></div>
+</div>
+
+<div class="line"></div>
+
+<!-- SONIDO -->
+<div class="level">
+    <div class="triangle" onclick="toggle(this)">
+        <span>Sonido</span>
+        <div class="tooltip">Captura de sonido directo.</div>
+    </div>
+</div>
+
+<div class="sublevel">
+    <div class="node">Ingeniero de Sonido<div class="tooltip">Graba diálogos y ambiente.</div></div>
+    <div class="node">Microfonista<div class="tooltip">Opera boom y micrófonos.</div></div>
+</div>
+
+<div class="line"></div>
+
+<!-- ARTE -->
+<div class="level">
+    <div class="triangle" onclick="toggle(this)">
+        <span>Arte</span>
+        <div class="tooltip">Construcción del mundo visual.</div>
+    </div>
+</div>
+
+<div class="sublevel">
+    <div class="node">Diseñador de Producción<div class="tooltip">Define estética general.</div></div>
+    <div class="node">Coordinador de Arte<div class="tooltip">Administra logística y presupuesto.</div></div>
+    <div class="node">Escenógrafo<div class="tooltip">Diseña y construye escenarios.</div></div>
+    <div class="node">Decorador<div class="tooltip">Ambientación del set.</div></div>
+    <div class="node">Utilero<div class="tooltip">Objetos de uso en escena.</div></div>
+    <div class="node">Diseñador Gráfico<div class="tooltip">Gráficos visibles en pantalla.</div></div>
+</div>
+
+<div class="line"></div>
+
+<!-- TALENTO -->
+<div class="level">
+    <div class="triangle" onclick="toggle(this)">
+        <span>Talento</span>
+        <div class="tooltip">Actuación y casting.</div>
+    </div>
+</div>
+
+<div class="sublevel">
+    <div class="node">Director de Casting<div class="tooltip">Selecciona actores.</div></div>
+    <div class="node">Actores<div class="tooltip">Interpretan personajes.</div></div>
+    <div class="node">Stand-In<div class="tooltip">Sustitutos técnicos.</div></div>
+    <div class="node">Dobles<div class="tooltip">Escenas de riesgo.</div></div>
+    <div class="node">Extras<div class="tooltip">Ambientación.</div></div>
+</div>
+
+<div class="line"></div>
+
+<!-- POST -->
+<div class="level">
+    <div class="triangle" onclick="toggle(this)">
+        <span>Postproducción</span>
+        <div class="tooltip">Edición y acabado final.</div>
+    </div>
+</div>
+
+<div class="sublevel">
+    <div class="node">Gerente de Post<div class="tooltip">Coordina la postproducción.</div></div>
+    <div class="node">Editor<div class="tooltip">Montaje narrativo.</div></div>
+    <div class="node">Diseñador de Sonido<div class="tooltip">Diseña el mundo sonoro.</div></div>
+    <div class="node">Colorista<div class="tooltip">Corrección y estilo de color.</div></div>
+    <div class="node">Supervisor VFX<div class="tooltip">Efectos visuales.</div></div>
+</div>
+
+</div>
+
+<script>
+function toggle(el){
+    el.parentElement.nextElementSibling.classList.toggle("show");
+}
+function zoom(el){
+    el.classList.toggle("active");
+}
+</script>
+
+</body>
+</html>
